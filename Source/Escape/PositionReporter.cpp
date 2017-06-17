@@ -18,8 +18,12 @@ UPositionReporter::UPositionReporter() {
 void UPositionReporter::BeginPlay() {
 	Super::BeginPlay();
 
-	// ...
-
+	UE_LOG( 
+		LogTemp, Warning, 
+		TEXT( "%s is at %s" ), 
+		*GetOwner()->GetName(),
+		*GetOwner()->GetActorLocation().ToString()
+	);
 }
 
 
