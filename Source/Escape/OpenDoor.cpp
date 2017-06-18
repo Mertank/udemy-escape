@@ -6,7 +6,7 @@
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor() :
-	OpenAngle( 70.0f ),
+	OpenAngle( -70.0f ),
 	PressurePlate( nullptr )
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
@@ -22,8 +22,7 @@ void UOpenDoor::BeginPlay() {
 	Super::BeginPlay();
 
 	// ...
-	GetOwner()->SetActorRotation( FRotator( 0.0f, -70.0f, 0.0f ) );
-	
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 
@@ -31,6 +30,11 @@ void UOpenDoor::BeginPlay() {
 void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// ...
+	if ( PressurePlate->IsOverlappingActor( ActorThatOpens ) ) {
+		OpenDoor();
+	}
 }
 
+void UOpenDoor::OpenDoor( void ) {
+	GetOwner()->SetActorRotation( FRotator( 0.0f, OpenAngle, 0.0f ) );
+}
