@@ -32,5 +32,13 @@ private:
 	UPROPERTY( VisibleAnywhere )
 	AActor*			ActorThatOpens;
 
+	UPROPERTY( EditAnywhere )
+	float			DoorCloseDelay;
+
+	float			LastOpenDoor;
+
+	AActor*			DoorOwner;
+
 	void			OpenDoor( void );
+	void			CloseDoor( void );
 };
