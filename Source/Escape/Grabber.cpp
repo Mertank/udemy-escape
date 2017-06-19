@@ -6,7 +6,8 @@
 
 // Sets default values for this component's properties
 UGrabber::UGrabber() :
-	GrabDistance( 0.0f ) 
+	GrabDistance( 0.0f ),
+	m_physicsHandle( nullptr )
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -21,6 +22,11 @@ void UGrabber::BeginPlay() {
 	Super::BeginPlay();
 
 	UE_LOG( LogTemp, Warning, TEXT( "Grabber reporting for duty" ) );
+
+	m_physicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if ( m_physicsHandle == nullptr ) {
+		UE_LOG( LogTemp, Error, TEXT( "%s does not have a physics handle attached to it" ), *GetOwner()->GetName() );
+	}
 }
 
 
