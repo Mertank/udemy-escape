@@ -27,4 +27,16 @@ private:
 	float						GrabDistance;
 
 	UPhysicsHandleComponent*	m_physicsHandle;
+	UInputComponent*			m_inputComponent;
+
+	//Gets the object in reach
+	AActor*						GetFirstActorInReach( void );
+
+	//Raycast and grab what's in reach
+	void						Grab( void );
+
+	//Drop the current object
+	void						Release( void );
+
+	FVector						GetReachLocation( void );
 };
