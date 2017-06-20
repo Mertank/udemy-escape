@@ -29,11 +29,11 @@ private:
 	UPROPERTY( EditAnywhere )
 	ATriggerVolume* PressurePlate;
 
-	UPROPERTY( VisibleAnywhere )
-	AActor*			ActorThatOpens;
-
 	UPROPERTY( EditAnywhere )
 	float			DoorCloseDelay;
+
+	UPROPERTY( EditAnywhere )
+	float			DoorOpenMass;
 
 	float			LastOpenDoor;
 
@@ -41,4 +41,7 @@ private:
 
 	void			OpenDoor( void );
 	void			CloseDoor( void );
+	
+	//Get mass on plate in kg
+	float			GetTotalMassOnPlate( void );
 };
