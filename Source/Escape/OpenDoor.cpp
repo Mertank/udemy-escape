@@ -8,13 +8,12 @@
 UOpenDoor::UOpenDoor() :
 	OpenAngle( -70.0f ),
 	PressurePlate( nullptr ),
+	DoorOwner( nullptr ),
 	LastOpenDoor( 0.0f )
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -31,37 +30,33 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
 	if ( GetTotalMassOnPlate() > DoorOpenMass ) {
-		OpenDoor();
+		OnDoorOpenRequested.Broadcast();
 
 		LastOpenDoor = GetWorld()->GetTimeSeconds();
 	} else if ( GetWorld()->GetTimeSeconds() > ( LastOpenDoor + DoorCloseDelay ) ) { //Close the door after a certain number of seconds
-		CloseDoor();
+		OnDoorCloseRequested.Broadcast();
 	}
-}
-
-void UOpenDoor::OpenDoor( void ) {
-	DoorOwner->SetActorRotation( FRotator( 0.0f, OpenAngle, 0.0f ) );
-}
-
-void UOpenDoor::CloseDoor( void ) {
-	DoorOwner->SetActorRotation( FRotator( 0.0f, 0.0f, 0.0f ) );
 }
 
 float UOpenDoor::GetTotalMassOnPlate( void ) {
 	float mass = 0.0f;
 
-	//Get all actors
-	TArray<AActor*> overlappingActors;
-	PressurePlate->GetOverlappingActors( overlappingActors );
+	if ( PressurePlate != nullptr ) {
+		//Get all actors
+		TArray<AActor*> overlappingActors;
+		PressurePlate->GetOverlappingActors( overlappingActors );
 
-	//Add their masses
-	for ( const AActor* actor : overlappingActors ) {
-		UPrimitiveComponent* primitive = actor->FindComponentByClass<UPrimitiveComponent>();
-		if ( primitive != nullptr ) {
-			UE_LOG( LogTemp, Warning, TEXT( "%s was mass of %f" ), *actor->GetName(), primitive->GetMass() );
+		//Add their masses
+		for ( const AActor* actor : overlappingActors ) {
+			UPrimitiveComponent* primitive = actor->FindComponentByClass<UPrimitiveComponent>();
+			if ( primitive != nullptr ) {
+				UE_LOG( LogTemp, Warning, TEXT( "%s was mass of %f" ), *actor->GetName(), primitive->GetMass() );
 
-			mass += primitive->GetMass();
+				mass += primitive->GetMass();
+			}
 		}
+	} else {
+		UE_LOG( LogTemp, Error, TEXT( "%s does not have a pressure plate attached" ), *GetOwner()->GetName() );
 	}
 
 	return mass;
